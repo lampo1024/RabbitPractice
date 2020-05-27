@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitPractice.Send", "src\RabbitPractice.Send\RabbitPractice.Send.csproj", "{F0D5EE9A-2E07-476E-95F8-6274E38235AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitPractice.Receive", "src\RabbitPractice.Receive\RabbitPractice.Receive.csproj", "{E5020FE2-6A1B-4647-94EE-2F53815AFACA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitPractice.Receive", "src\RabbitPractice.Receive\RabbitPractice.Receive.csproj", "{E5020FE2-6A1B-4647-94EE-2F53815AFACA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitPractice.Api", "RabbitPractice.Api\RabbitPractice.Api.csproj", "{F6D88DB8-A6D8-40DE-B7F6-BEEF872849BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E5020FE2-6A1B-4647-94EE-2F53815AFACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5020FE2-6A1B-4647-94EE-2F53815AFACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5020FE2-6A1B-4647-94EE-2F53815AFACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6D88DB8-A6D8-40DE-B7F6-BEEF872849BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6D88DB8-A6D8-40DE-B7F6-BEEF872849BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6D88DB8-A6D8-40DE-B7F6-BEEF872849BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6D88DB8-A6D8-40DE-B7F6-BEEF872849BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
