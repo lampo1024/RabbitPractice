@@ -12,5 +12,9 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RabbitPractice.Shared\RabbitPractice.Shared.csproj" />
+  </ItemGroup>
+
 
 </Project>

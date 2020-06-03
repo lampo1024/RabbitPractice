@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using RabbitPractice.Shared;
+using System;
 using System.Linq;
 using System.Text;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using System.Text.Json;
 
 namespace RabbitPractice.Receive
 {
@@ -11,7 +13,7 @@ namespace RabbitPractice.Receive
         public static void Main()
         {
             //RealtimeMessage();
-            
+
             //DelayedMessage();
             DirectAcceptExchangeEvent();
 
@@ -24,24 +26,22 @@ namespace RabbitPractice.Receive
         /// </summary>
         public static void DirectAcceptExchangeEvent()
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using (var connection = factory.CreateConnection())
+            var factory = RabbitConnectionFactory.GetConnectionFactory;
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+            channel.QueueDeclare("hello1", durable: true, autoDelete: false, exclusive: false, arguments: null);
+            //channel.QueueBind(QueueName, ExchangeName, routingKey: QueueName);
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, ea) =>
             {
-                using (IModel channel = connection.CreateModel())
-                {
-                    channel.QueueDeclare("hello1", durable: true, autoDelete: false, exclusive: false, arguments: null);
-                    //channel.QueueBind(QueueName, ExchangeName, routingKey: QueueName);
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (model, ea) =>
-                    {
-                        var msgBody = Encoding.UTF8.GetString(ea.Body);
-                        Console.WriteLine(string.Format("***接收时间:{0}，消息内容：{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), msgBody));
-                    };
-                    channel.BasicConsume("hello1", true, consumer: consumer);
-                    Console.WriteLine("按任意值，退出程序");
-                    Console.ReadKey();
-                }
-            }
+                var msgBody = Encoding.UTF8.GetString(ea.Body);
+                Console.WriteLine($"***接收时间:{DateTime.Now:yyyy-MM-dd HH:mm:ss}，消息内容：{msgBody}");
+                var customer = JsonSerializer.Deserialize<Customer>(msgBody);
+                Console.WriteLine($"guid: {customer.Guid}, name: {customer.Name}");
+            };
+            channel.BasicConsume("hello1", true, consumer: consumer);
+            Console.WriteLine("按任意值，退出程序");
+            Console.ReadKey();
         }
 
         public static void RealtimeMessage()

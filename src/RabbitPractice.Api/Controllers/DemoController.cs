@@ -3,6 +3,9 @@ using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using RabbitPractice.Shared;
 
 namespace RabbitPractice.Api.Controllers
 {
@@ -10,35 +13,36 @@ namespace RabbitPractice.Api.Controllers
     [ApiController]
     public class DemoController : ControllerBase
     {
+
+        public DemoController()
+        {
+
+        }
+
         [HttpGet("{name}")]
         public IActionResult Send(string name)
         {
-            var factory = new ConnectionFactory()
+            using var connection = RabbitConnectionFactory.GetConnectionFactory.CreateConnection();
+            using var channel = connection.CreateModel();
+            channel.QueueDeclare(queue: "hello1",
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            var customer = new Customer
             {
-                HostName = "localhost",
-                UserName = "admin",
-                Password = "123456",
-                VirtualHost="rt"
+                Guid = Guid.NewGuid(),
+                Name = name
             };
+            var message = JsonSerializer.Serialize(customer);
+            var body = Encoding.UTF8.GetBytes(message);
 
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "hello1",
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                string message = $"Hello,{name}!";
-                var body = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(exchange: "",
-                                     routingKey: "hello1",
-                                     basicProperties: null,
-                                     body: body);
-                return Ok($"[x] Sent {message}");
-            }
+            channel.BasicPublish(exchange: "",
+                routingKey: "hello1",
+                basicProperties: null,
+                body: body);
+            return Ok($"[x] Sent {message}");
         }
 
         /// <summary>
@@ -49,15 +53,7 @@ namespace RabbitPractice.Api.Controllers
         [HttpGet("{name}")]
         public IActionResult Delayed(string name)
         {
-            var factory = new ConnectionFactory()
-            {
-                HostName = "localhost",
-                UserName = "admin",
-                Password = "123456",
-                VirtualHost = "dm"
-            };
-
-            using var connection = factory.CreateConnection();
+            using var connection = RabbitConnectionFactory.GetConnectionFactory.CreateConnection();
             try
             {
                 using var channel = connection.CreateModel();
